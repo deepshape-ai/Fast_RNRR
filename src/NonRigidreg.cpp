@@ -163,7 +163,7 @@ Scalar NonRigidreg::DoNonRigid()
             mat_U0_.setZero();
             corres_pair_ids_.setZero();
 #pragma omp parallel for
-            for (size_t i = 0; i < correspondence_pairs_.size(); i++)
+            for (int i = 0; i < correspondence_pairs_.size(); i++)
             {
                 mat_U0_.col(correspondence_pairs_[i].src_idx) = correspondence_pairs_[i].position;
                 corres_pair_ids_[correspondence_pairs_[i].src_idx] = 1;

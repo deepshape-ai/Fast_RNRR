@@ -1,3 +1,13 @@
+# What is this
+
+Non-rigid registration Method
+
+CHANGELOG:
+- [x] 更改项目结构，生成lib而不是exe
+
+
+--- Original README.md ---
+
 # Fast_RNRR
 This repository includes the source code of the paper "Quasi-Newton Solver for Robust Non-Rigid Registration", (CVPR2020), [https://arxiv.org/abs/2004.04322](https://arxiv.org/abs/2004.04322).
 

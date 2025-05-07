@@ -1,53 +1,69 @@
-cmake_minimum_required(VERSION 2.8)
-project(Fast_RNRR)
+cmake_minimum_required(VERSION 3.10)
+project(Fast_RNRR VERSION 1.0.0 LANGUAGES CXX)
 
-#--- CMake configuration
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# 设置 C++ 标准
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#--- Compiler configuration
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-
-#--- OpenMP (cannot work in clang)
-find_package(OpenMP QUIET)
-if(OPENMP_FOUND)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-endif()
-
-#--- Eigen3
+# 查找依赖库
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIRS})
+find_package(OpenMP)
+find_package(NanoFlann REQUIRED)
+find_package(OpenMesh REQUIRED)
 
-# enable Intel-MKL (only for Intel compilers)
-# NB requires correct specification of BLA_VENDOR, e.g.
-#   export BLA_VENDOR=Intel10_64lp_seq
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-  find_package(BLAS)
-  include_directories(${BLAS_INCLUDE_DIRS})
-  set(PROJECT_LIBS ${BLAS_LIBRARIES})
-  add_definitions(-DEIGEN_USE_MKL_ALL)
+# 添加编译选项
+if(OpenMP_CXX_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    add_definitions(-DUSE_OPENMP)
 endif()
 
-#--- Nanoflann
-find_package(NanoFlann REQUIRED)
-include_directories(${NANOFLANN_INCLUDE_DIR})
+# 设置包含目录
+include_directories(
+    ${EIGEN3_INCLUDE_DIR}
+    ${NANOFLANN_INCLUDE_DIR}
+    ${OPENMESH_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/thirdparty
+)
 
-#--- Build example
-include_directories("./src/")
-file(GLOB SOURCES "./src/*.cpp" "./src/geodesic/*.cpp" "./src/tools/*.cpp")
-file(GLOB HEADERS "./src/*.h" "./src/geodesic/*.h" "./src/tools/*.h")
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+# 收集源文件
+file(GLOB_RECURSE SOURCES 
+    "src/*.cpp"
+    "src/tools/*.cpp"
+    "src/geodesic/*.cpp"
+)
 
-#--- openmesh libs
-target_link_libraries(${PROJECT_NAME}
-    OpenMeshCore OpenMeshTools)
+# 排除 main.cpp
+list(FILTER SOURCES EXCLUDE REGEX ".*main\\.cpp$")
 
+# 添加库目标
+add_library(Fast_RNRR STATIC ${SOURCES})
 
-if(APPLE OR UNIX)
-    #--- Deploy data folder link
-    execute_process(COMMAND ln -f -s ${CMAKE_SOURCE_DIR}/data WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    #--- "Dummy" target to have data appear in QtCreator
-    add_custom_target(data SOURCES ${CMAKE_SOURCE_DIR}/data)
-else()
-    file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${PROJECT_BINARY_DIR})
+# 设置库的属性
+set_target_properties(Fast_RNRR PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    PUBLIC_HEADER "include/INonRigidReg.h"
+)
+
+# 链接依赖库
+target_link_libraries(Fast_RNRR
+    ${OPENMESH_LIBRARIES}
+)
+
+add_definitions(-D_USE_MATH_DEFINES)
+
+# 安装规则
+install(TARGETS Fast_RNRR
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    PUBLIC_HEADER DESTINATION include
+)
+
+# 可选：构建示例程序
+option(BUILD_EXAMPLES "Build example applications" OFF)
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
