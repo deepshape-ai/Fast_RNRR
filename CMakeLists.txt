@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 查找依赖库
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(Eigen3 REQUIRED)
 find_package(OpenMP)
 find_package(NanoFlann REQUIRED)
@@ -23,9 +23,9 @@ include_directories(
     ${EIGEN3_INCLUDE_DIR}
     ${NANOFLANN_INCLUDE_DIR}
     ${OPENMESH_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/thirdparty
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty
 )
 
 # 收集源文件
@@ -50,7 +50,8 @@ set_target_properties(Fast_RNRR PROPERTIES
 
 # 链接依赖库
 target_link_libraries(Fast_RNRR
-    ${OPENMESH_LIBRARIES}
+    OpenMeshCore
+    OpenMeshTools
 )
 
 add_definitions(-D_USE_MATH_DEFINES)

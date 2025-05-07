@@ -10,8 +10,8 @@ FIND_PATH( EIGEN3_INCLUDE_DIRS Eigen/Geometry
     /usr/include
     /opt/X11/include
     /opt/include 
-    ${CMAKE_SOURCE_DIR}/external/eigen/include
-    ${CMAKE_SOURCE_DIR}/include/eigen3)
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/eigen/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/eigen3)
 
 SET(EIGEN3_FOUND "NO")
 IF(EIGEN3_INCLUDE_DIRS)
