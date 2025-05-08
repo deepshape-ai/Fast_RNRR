@@ -64,7 +64,8 @@ public:
         if (reg_) {
             delete reg_;
         }
-        reg_ = new NonRigidreg();
+        //> wtf, no ()
+        reg_ = new NonRigidreg;
         
         // 执行配准
         Timer time;
@@ -109,8 +110,8 @@ public:
         return ss.str();
     }
     
-    NonRigidReg::Parameters params_;
-    NonRigidreg* reg_;
+    NonRigidReg::Parameters params_ {};
+    NonRigidreg* reg_ = nullptr;
     
     struct TimingInfo {
         double rigid_init_time = 0.0;
