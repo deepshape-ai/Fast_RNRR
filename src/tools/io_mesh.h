@@ -77,7 +77,7 @@ bool read_data(const std::string filename, Mesh& mesh)
     mesh.request_vertex_normals();
     bool read_OK = OpenMesh::IO::read_mesh(mesh, filename,opt_read);
 
-	std::cout << "filename = " << filename << std::endl;
+	// std::cout << "filename = " << filename << std::endl;
     if (read_OK)
     {
         mesh.request_vertex_status();
@@ -85,7 +85,7 @@ bool read_data(const std::string filename, Mesh& mesh)
         mesh.request_face_status();
 
         mesh.request_face_normals();
-        printBasicMeshInfo(mesh);
+        // printBasicMeshInfo(mesh);
 
         mesh.update_face_normals();
         if(mesh.n_faces()>0)
@@ -100,7 +100,7 @@ bool read_data(const std::string filename, Mesh& mesh)
         MeshScales /= mesh.n_vertices();
         return true;
     }
-    std::cout << "#vertices = " << mesh.n_vertices() << std::endl;
+    // std::cout << "#vertices = " << mesh.n_vertices() << std::endl;
     return false;
 }
 
