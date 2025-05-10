@@ -35,20 +35,14 @@ file(GLOB_RECURSE SOURCES
     "src/geodesic/*.cpp"
 )
 
-# 排除 main.cpp
-list(FILTER SOURCES EXCLUDE REGEX ".*main\\.cpp$")
-
-# 添加库目标
 add_library(Fast_RNRR STATIC ${SOURCES})
 
-# 设置库的属性
 set_target_properties(Fast_RNRR PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/INonRigidReg.h"
+    PUBLIC_HEADER "include/Fast_RNRR/INonRigidReg.h"
 )
 
-# 链接依赖库
 target_link_libraries(Fast_RNRR
     OpenMeshCore
     OpenMeshTools
@@ -56,15 +50,8 @@ target_link_libraries(Fast_RNRR
 
 add_definitions(-D_USE_MATH_DEFINES)
 
-# 安装规则
 install(TARGETS Fast_RNRR
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     PUBLIC_HEADER DESTINATION include
 )
-
-# 可选：构建示例程序
-option(BUILD_EXAMPLES "Build example applications" OFF)
-if(BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()

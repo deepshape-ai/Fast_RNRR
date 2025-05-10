@@ -1,4 +1,4 @@
-#include "INonRigidReg.h"
+#include "Fast_RNRR/INonRigidReg.h"
 #include "tools/io_mesh.h"
 #include "tools/OmpHelper.h"
 #include "NonRigidreg.h"
