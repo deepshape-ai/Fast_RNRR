@@ -1,7 +1,9 @@
 #ifndef OMPHELPER_H_
 #define OMPHELPER_H_
 
+#ifdef _WIN32
 #define USE_OPENMP
+#endif
 
 #ifdef USE_OPENMP
 #include <omp.h>
